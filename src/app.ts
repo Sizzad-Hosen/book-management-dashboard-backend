@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { BooksRoutes } from './app/modules/books/book.route';
 import { globalErrorHandler } from './app/middleware/globalErrorHandler';
 import { UserRoutes } from './app/modules/users/user.route';
+import { AuthRoutes } from './app/modules/auth/auth.route';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/books', BooksRoutes);
 app.use('/api/v1/users',UserRoutes)
+app.use('/api/v1/auth',AuthRoutes)
 
 // Global error handler (must be after routes)
 app.use(globalErrorHandler);

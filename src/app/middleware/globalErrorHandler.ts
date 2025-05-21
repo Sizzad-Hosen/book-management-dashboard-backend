@@ -43,7 +43,10 @@ export const globalErrorHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
-  } else {
+  }
+  
+  
+  else {
     // Fallback for unhandled errors
     errorSources = [
       {

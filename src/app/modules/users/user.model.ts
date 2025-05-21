@@ -1,35 +1,25 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { IUser } from './user.interface';
+import { IUser, IUserModel } from './user.interface';
 
-
-const userSchema = new Schema<IUser>(
-  {
-    name: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
-    role: {
-      type: String,
-      enum: ['admin', 'user'],
-      default: 'user',
-    },
-        isDeleted: { type: String, required: false }, // Optional field
-  },
-  {
-    timestamps: true,
-  }
-);
-
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-
-  if (this.isModified('password')) {
-
-    const hashed = await bcrypt.hash(this.password, 10);
-    this.password = hashed;
-
-  }
-  next();
+const userSchema = new Schema<IUser, IUserModel>({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['admin', 'user'], required: true },
+  isDeleted: { type: Boolean, default: false },
 });
 
-export const UserModel = model<IUser>('User', userSchema);
+// static methods
+userSchema.statics.isUserExists = async function (email: string) {
+  return await this.findOne({ email }, 'email password role');
+};
+
+userSchema.statics.isPasswordMatch = async function (
+  plainTextPassword: string,
+  hashedPassword: string
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
+export const User = model<IUser, IUserModel>('User', userSchema);
