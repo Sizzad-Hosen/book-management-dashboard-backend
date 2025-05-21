@@ -1,81 +1,82 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
 import { BookServices } from "./book.service";
 import { bookValidationSchema } from "./book.validation";
+import catchAsync from "../../utilits/catchAsync";
 
-export const createBookFromDB = async (req: Request, res: Response) => {
-  try {
-    console.log("body", req.body);
+// ✅ Create Book
 
+export const createBookFromDB = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+  const validatedData = bookValidationSchema.parse(req.body);
+  const newBook = await BookServices.createBookInToDB(validatedData);
 
-    const validatedData = bookValidationSchema.parse(req.body);
-    
+  return res.status(201).json({
+    success: true,
+    message: "Book created successfully",
+    data: newBook,
+  });
+});
 
-    const newBook = await BookServices.createBookInToDB(validatedData);
+// ✅ Get All Books
+export const getAllBookFromDB = catchAsync(async (req, res)=> {
+  const allBooks = await BookServices.getALLBookInTOBD();
 
-    return res.status(201).json({
-      success: true,
-      message: "Book created successfully",
-      data: newBook,
-    });
+  return res.status(200).json({
+    success: true,
+    message: "Books retrieved successfully",
+    data: allBooks,
+  });
+});
 
-  } catch (error) {
- 
+// ✅ Get Single Book
+export const getSingelBookFromDB = catchAsync(async (req, res)=> {
+  const { id } = req.params;
+  const result = await BookServices.getSingelBookInToDB(id);
 
-    if (error instanceof ZodError) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation error",
-        errors: error.errors,
-      });
-    }
-
- 
-    return res.status(500).json({
+  if (!result) {
+    return res.status(404).json({
       success: false,
-      message: "Something went wrong",
-      error: error instanceof Error ? error.message : "Unknown error",
+      message: "Book not found",
     });
   }
-};
 
-export const getAllBookFromDB = async(req:Request, res:Response)=>{
-      try {
-  
- 
-    
-    const allBooks = await BookServices.getALLBookInTOBD();
+  return res.status(200).json({
+    success: true,
+    message: "Book retrieved successfully",
+    data: result,
+  });
+});
 
-    return res.status(201).json({
-      success: true,
-      message: "Book retrieved successfully",
-      data: allBooks,
-    });
+// ✅ Delete Book
+export const deleteBookFromDB = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const deleted = await BookServices.deleteBookInToDB(id);
 
-  } catch (error) {
- 
+  return res.status(200).json({
+    success: true,
+    message: "Book deleted successfully",
+    data: deleted,
+  });
+});
 
-    if (error instanceof ZodError) {
-      return res.status(400).json({
-        success: false,
-        message: "Validation error",
-        errors: error.errors,
-      });
-    }
+// ✅ Update Book
+export const updateBookFromDB = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await BookServices.updateBookInToDB(id, req.body);
 
- 
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      error: error instanceof Error ? error.message : "Unknown error",
-    });
-  }
-};
+  return res.status(200).json({
+    success: true,
+    message: "Book updated successfully",
+    data: result,
+  });
+});
 
-
-
-
+// ✅ Export All as Controller
 export const BookContollers = {
-    createBookFromDB,
-    getAllBookFromDB
-}
+  createBookFromDB,
+  getAllBookFromDB,
+  getSingelBookFromDB,
+  deleteBookFromDB,
+  updateBookFromDB,
+};

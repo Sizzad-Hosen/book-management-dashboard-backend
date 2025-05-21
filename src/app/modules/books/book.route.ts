@@ -8,6 +8,8 @@ router.post('/create-book',BookContollers.createBookFromDB)
 
 router.get('/',BookContollers.getAllBookFromDB)
 
-
+router.get('/:id',BookContollers.getSingelBookFromDB)
+router.delete('/:id', BookContollers.deleteBookFromDB)
+router.put('/:id', BookContollers.updateBookFromDB)
 
 export const BooksRoutes = router;
