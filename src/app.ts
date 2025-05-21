@@ -1,16 +1,21 @@
-import express from 'express'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import { BooksRoutes } from './app/modules/books/book.route'
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import { BooksRoutes } from './app/modules/books/book.route';
+import { globalErrorHandler } from './app/middleware/globalErrorHandler';
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-// middeleware
-app.use(cors())
-app.use(express.json())
+// Middleware
+app.use(cors());
+app.use(express.json());
 
+// Routes
 app.use('/api/v1/books', BooksRoutes);
 
-export default app
+// Global error handler (must be after routes)
+app.use(globalErrorHandler);
+
+export default app;
