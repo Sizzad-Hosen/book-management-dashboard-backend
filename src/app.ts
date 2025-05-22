@@ -8,6 +8,7 @@ import { AuthRoutes } from './app/modules/auth/auth.route';
 import cookieParser from 'cookie-parser';
 import { AdminRoutes } from './app/modules/Admin/admin.route';
 import { ProductRoutes } from './app/modules/Product/product.route';
+import { SalesRoutes } from './app/modules/Sales/sales.route';
 
 dotenv.config();
 
@@ -25,7 +26,7 @@ app.use('/api/v1/users',UserRoutes)
 app.use('/api/v1/auth',AuthRoutes)
 app.use('/api/v1/admin',AdminRoutes)
 app.use('/api/v1/products',ProductRoutes)
-
+app.use('/api/v1/sales',SalesRoutes)
 // Global error handler (must be after routes)
 app.use(globalErrorHandler);
 

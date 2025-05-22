@@ -5,21 +5,25 @@ import httpStatus from 'http-status';
 
 
 
+
 export const createSaleHandler = async (req: Request, res: Response, next: NextFunction) => {
+  console.log('🟡 Request body:', req.body);
 
-
+  try {
     const sale = await SalesServices.createSale(req.body);
+    
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Sale created successfully',
+      data: sale,
+    });
+  } catch (err) {
+    console.error('❌ Sale creation failed:', err);
+    next(err);
+  }
+};
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'User retrieved successfully',
-    data: sale,
-  });
-
-
-
-}
 
 export const getSalesHistoryHandler = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -35,7 +39,7 @@ export const getSalesHistoryHandler = async (req: Request, res: Response, next: 
     success: true,
     message: 'User retrieved successfully',
     data: period,
-    
+
   });
 };
 
