@@ -6,13 +6,9 @@ import AppError from '../config/errors/AppError';
 import config from '../config';
 import { User } from '../modules/users/user.model';
 
-const auth = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
-
+const auth = (allowedRoles: string[]) => catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   
-  console.log('Authorization Header:', authHeader);
-
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'No token provided or wrong format!');
   }
@@ -27,23 +23,21 @@ const auth = catchAsync(async (req: Request, res: Response, next: NextFunction) 
     throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid or expired token!');
   }
 
-  console.log('Decoded Token:', decoded);
-
-  const { userEmail } = decoded;
+  const { userEmail, role } = decoded;
 
   const user = await User.isUserExists(userEmail);
-
-  console.log('user',user)
 
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
   }
 
+  if (!allowedRoles.includes(role)) {
+    throw new AppError(httpStatus.FORBIDDEN, 'Access denied: insufficient role');
+  }
+
   req.user = decoded;
 
   next();
-
 });
-
 
 export default auth;
