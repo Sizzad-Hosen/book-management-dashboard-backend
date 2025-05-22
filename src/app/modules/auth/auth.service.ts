@@ -23,7 +23,7 @@ const loginUser = async (payload: TLoginUser) => {
 
    // Token Payload
   const jwtPayload = {
-    userId: user.email,
+    userEmail: user.email,
     role: user.role,
   };
 
@@ -53,6 +53,56 @@ console.log('jwtpayload',jwtPayload)
   };
 };
 
+const refreshToken = async (token: string) => {
+  
+  // checking if the given token is valid
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string);
+
+  console.log('verifytoken', decoded)
+
+
+  const { userEmail, iat } = decoded;
+
+  // checking if the user is exist
+  const user = await User.isUserExists(userEmail);
+  console.log('user', user)
+
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+
+  // if (
+  //   user.passwordChangedAt &&
+  //   User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)
+  // ) {
+  //   throw new AppError(httpStatus.UNAUTHORIZED, 'You are not authorized !');
+  // }
+
+  const jwtPayload = {
+    userEmail: user.email,
+    role: user.role,
+  };
+
+  console.log('jwt payload', jwtPayload)
+  
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+
+    console.log('accessToken', accessToken)
+
+  return {
+    accessToken,
+  };
+};
+
+
 export const AuthServices = {
   loginUser,
+  refreshToken,
+
 };
+
