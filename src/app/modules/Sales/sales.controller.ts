@@ -38,7 +38,7 @@ export const getSalesHistoryHandler = async (req: Request, res: Response, next: 
     statusCode: httpStatus.OK,
     success: true,
     message: 'User retrieved successfully',
-    data: period,
+    data: sales
 
   });
 };

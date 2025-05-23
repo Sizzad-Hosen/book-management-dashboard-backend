@@ -15,6 +15,7 @@ export const createSale = async (payload: ISale) => {
     console.log('Create Sale Payload:', payload); // 🔍
 
     const product = await Product.findById(payload.productId).session(session);
+    
     if (!product) {
       throw new AppError(httpStatus.NOT_FOUND, 'Product not found');
     }

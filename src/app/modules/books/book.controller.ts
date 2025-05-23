@@ -84,10 +84,38 @@ export const updateBookFromDB = catchAsync(async (req, res) => {
 
 
 
+
+export const searchBooksHandler = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+
+    const { title, author, minPrice, maxPrice } = req.query;
+
+    const filters = {
+      title: title as string | undefined,
+      author: author as string | undefined,
+      minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
+      maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
+    };
+
+    const books = await BookServices.searchBooks(filters);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Books retrieved successfully',
+      data: books,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const BookContollers = {
   createBookFromDB,
   getAllBookFromDB,
   getSingelBookFromDB,
   deleteBookFromDB,
   updateBookFromDB,
+  searchBooksHandler
 };

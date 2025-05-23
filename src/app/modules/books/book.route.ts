@@ -6,6 +6,9 @@ import { BooksValidationSchema } from './book.validation';
 const router = express.Router();
 
 
+
+router.get('/search', BookContollers.searchBooksHandler);
+
 router.post('/create-book',validateRequest(BooksValidationSchema.CreatebookValidationSchema),BookContollers.createBookFromDB)
 
 router.get('/',BookContollers.getAllBookFromDB)

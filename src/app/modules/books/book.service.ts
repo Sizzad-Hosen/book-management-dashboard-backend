@@ -42,10 +42,45 @@ const updateBookInToDB = async(id:string,payload:IBook)=>{
 }
 
 
+
+export const searchBooks = async (filters: {
+
+  title?: string;
+  author?: string;
+  minPrice?: number;
+  maxPrice?: number;
+
+}) => {
+
+  const query: any = {};
+
+  if (filters.title) {
+    query.title = { $regex: filters.title, $options: 'i' }; // case-insensitive search
+  }
+
+  if (filters.author) {
+    query.author = { $regex: filters.author, $options: 'i' };
+  }
+
+  if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
+    query.price = {};
+    if (filters.minPrice !== undefined) {
+      query.price.$gte = filters.minPrice;
+    }
+    if (filters.maxPrice !== undefined) {
+      query.price.$lte = filters.maxPrice;
+    }
+  }
+
+  return await BookModel.find(query);
+};
+
+
 export const BookServices = {
     createBookInToDB,
     getSingelBookInToDB,
     getALLBookInTOBD,
     deleteBookInToDB,
-    updateBookInToDB
+    updateBookInToDB,
+    searchBooks
 }
