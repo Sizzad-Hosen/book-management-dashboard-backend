@@ -46,6 +46,11 @@ const bookSchema: Schema<IBook> = new Schema(
       required: true,
       min: 0,
     },
+    image:{
+      type:String,
+       required: true,
+     
+    },
     quantity: {
       type: Number,
       required: true,

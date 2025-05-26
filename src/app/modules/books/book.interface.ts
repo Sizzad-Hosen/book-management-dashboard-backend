@@ -14,6 +14,8 @@ export interface IBook extends Document {
   releaseDate?: Date;
   price: number;
   quantity: number;
+  image:string
   createdAt: Date;
   updatedAt: Date;
+  
 }

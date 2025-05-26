@@ -101,6 +101,11 @@ export const UpdatedBookValidationSchema = z.object({
       required_error: "Price is required",
     })
     .min(0, "Price must be 0 or more"),
+  image: z
+    .string({
+      required_error: "Image is required",
+    }),
+ 
 
   quantity: z
     .number({
