@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const CreatebookValidationSchema = z.object({
+export const CreateBookValidationSchema = z.object({
+body:z.object({
 
 
   title: z
@@ -52,6 +53,14 @@ export const CreatebookValidationSchema = z.object({
     })
     .int()
     .min(0, "Quantity must be 0 or more"),
+    
+  image: z
+    .string({
+      required_error: "Image is required",
+    })
+
+})
+
 });
 
 
@@ -101,23 +110,19 @@ export const UpdatedBookValidationSchema = z.object({
       required_error: "Price is required",
     })
     .min(0, "Price must be 0 or more"),
-  image: z
-    .string({
-      required_error: "Image is required",
-    }),
- 
 
-  quantity: z
+    quantity: z
     .number({
       required_error: "Quantity is required",
     })
     .int()
     .min(0, "Quantity must be 0 or more"),
+  
 });
 
 
-export const BooksValidationSchema = {
-CreatebookValidationSchema,
+export const  BookValidationSchemas = {
+CreateBookValidationSchema,
 UpdatedBookValidationSchema
 
 }

@@ -9,7 +9,8 @@ import httpStatus from 'http-status'
 export const createBookFromDB = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
 
-
+ console.log('body', req.body);
+ 
    const newBook = await BookServices.createBookInToDB(req.body);
 
    sendResponse(res,{

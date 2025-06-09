@@ -15,10 +15,14 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cookieParser());
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:8000'],
+    credentials: true, // <-- Add this line
+  }));
+  
 app.use(express.json());
 
-app.use(cookieParser());
 
 // Routes
 app.use('/api/v1/books', BooksRoutes);
