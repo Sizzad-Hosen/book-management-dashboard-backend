@@ -1,17 +1,20 @@
 import { Model } from 'mongoose';
 
+export type TRole = 'admin' | 'user' | 'seller' | 'buyer';
+
 export interface IUser {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'user';
+  role: TRole;
   isDeleted?: boolean;
 }
 
-// Static methods for the User model
 export interface IUserModel extends Model<IUser> {
-  isUserExists(email: string): Promise<Pick<IUser, 'email' | 'password' | 'role'>>;
-
+  isUserExists(
+    email: string
+  ): Promise<Pick<IUser, 'name' | 'email' | 'password' | 'role'> | null>;
+  
   isPasswordMatch(
     plainTextPassword: string,
     hashedPassword: string

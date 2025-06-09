@@ -7,27 +7,40 @@ import { createToken, verifyToken } from "./auth.utils";
 const loginUser = async (payload: TLoginUser) => {
   const { email, password } = payload;
 
+
   // 1. Check if user exists
   const user = await User.isUserExists(email);
-
+  
   if (!user) {
+    console.log('User not found in database');
     throw new AppError(httpStatus.NOT_FOUND, "User does not exist");
   }
+  
+  console.log('Found user:', {
+    email: user.email,
+    storedPassword: user.password, // This should show the hashed password
+    role: user.role
+  });
 
   // 2. Check if password matches
+
+  
   const isPasswordMatched = await User.isPasswordMatch(password, user.password);
 
+
+  
   if (!isPasswordMatched) {
+    console.log('Password comparison failed');
     throw new AppError(httpStatus.UNAUTHORIZED, "Password is incorrect");
   }
 
-   // Token Payload
+  // Token Payload
   const jwtPayload = {
     userEmail: user.email,
     role: user.role,
   };
 
-console.log('jwtpayload',jwtPayload)
+  console.log('Creating tokens with payload:', jwtPayload);
 
   const accessToken = createToken(
     jwtPayload,
@@ -35,18 +48,13 @@ console.log('jwtpayload',jwtPayload)
     config.jwt_access_expires_in as string
   );
 
-
-
-  console.log('accessToken', accessToken)
-  // 4. Optionally: generate refresh token
-
-   const refreshToken = createToken(
+  const refreshToken = createToken(
     jwtPayload,
     config.jwt_refresh_secret as string,
     config.jwt_refresh_expires_in as string,
   );
 
-
+  console.log('Login successful. Tokens generated.');
   return {
     accessToken,
     refreshToken,
